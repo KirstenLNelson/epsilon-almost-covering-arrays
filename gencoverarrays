@@ -1,0 +1,50 @@
+"""
+Created on Sat May  29 12:16:00 2021
+
+@author: KirstenLNelson
+
+A very naive program to generate all covering arrays with parameters t=2,k=3,v=2,N=4.
+Runs in Sage or Python.
+"""
+
+import doctest
+import itertools
+
+# ------------------------------------------------------
+def is_CA(array):
+# ------------------------------------------------------
+    '''
+    >>> is_CA([[0,0,1,1],[0,1,0,1]])
+    True
+    '''    
+    k = len(array)
+    for t_set in itertools.combinations(range(k), 2):
+        if not is_t_set_covered(array, t_set):
+            return False
+    return True
+
+# ------------------------------------------------------    
+def is_t_set_covered(array, t_set):
+# ------------------------------------------------------
+    row_set = set()
+    for j in range(0, 3):
+        row_set.add((array[t_set[0]][j], array[t_set[1]][j]))
+    if len(row_set) == 3:
+        return True
+    else:
+        return False
+        
+# ------------------------------------------------------
+def search_CA(temp_array, i):
+# ------------------------------------------------------
+    if i == 3 and is_CA(temp_array):
+        print(temp_array)
+    else:
+        for column in itertools.permutations([0, 0, 1, 1]):
+            new_array = temp_array[:]
+            new_array.append(column)
+            if is_CA(new_array):
+                search_CA(new_array, i+1)
+
+doctest.testmod()
+search_CA([], 0)
