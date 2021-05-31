@@ -3,11 +3,11 @@ Created on Sat May  29 12:16:00 2021
 
 @author: KirstenLNelson
 
-A very naive program to generate all covering arrays with parameters t=2,k=3,v=2,N=4.
-Runs in Sage or Python.
+A very naive Python program to generate all covering arrays with parameters 
+CA(N;t,k,v) where t=2, v=2, and you set your desired k and N.
 """
 
-import doctest
+from time import time
 import itertools
 
 # ------------------------------------------------------
@@ -18,9 +18,11 @@ def is_CA(array):
     True
     >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]])
     False
-    '''    
-    k = len(array)
-    for t_set in itertools.combinations(range(k), 2):
+    '''
+# The array may not be full size yet    
+    len_array = len(array)
+# We will cycle through every possible pair of columns to test coverage
+    for t_set in itertools.combinations(range(len_array), 2):
         if not is_t_set_covered(array, t_set):
             return False
     return True
@@ -28,32 +30,57 @@ def is_CA(array):
 # ------------------------------------------------------    
 def is_t_set_covered(array, t_set):
 # ------------------------------------------------------
-    ''' 
+    '''
     >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (1,2))
     False
-    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1))   
+    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1))
     True
-    ''' 
-
+    '''
     row_set = set()
-    for j in range(0, 3):
+# Cycle through the k column-rows of the array    
+    for j in range(0, len(array[0])):
+# Pull out the 2-tuple and put it in the set  
         row_set.add((array[t_set[0]][j], array[t_set[1]][j]))
-    if len(row_set) == 3:
+# We need the number of unique tuples to be 4; each of 00, 01, 10, 11
+    if len(row_set) == 4:
         return True
     else:
         return False
-        
+
 # ------------------------------------------------------
 def search_CA(temp_array, i):
 # ------------------------------------------------------
-    if i == 3 and is_CA(temp_array):
-        print(temp_array)
+    global number_found
+    global branches
+    if i == k and is_CA(temp_array):
+# We want our rows to be in increasing order
+        if temp_array[1] < temp_array[2]:
+            number_found = number_found + 1
+            print('I found you this array: ', temp_array)
+        branches = branches + 1
     else:
-        for column in itertools.permutations([0, 0, 1, 1]):
+        branches = branches + 1
+# This is a terrible solution for the fact that we are getting each possible
+# row four times more often than we need it.
+        for column in list(set(itertools.permutations(base_row))):
             new_array = temp_array[:]
             new_array.append(column)
             if is_CA(new_array):
                 search_CA(new_array, i+1)
 
 doctest.testmod()
-search_CA([], 0)
+start_time = time()
+number_found = 0
+branches = 0
+# Set this to your desired parameter k, the number of factors
+k = 3
+# Set this to your desired first column; normally a balance of zeroes and ones,
+# and if your length is odd, have one extra zero.
+base_row = (0,0,1,1)
+# Fix the first row as what we want it to be for canonical generation.
+search_CA([base_row], 1)
+print('number_found is: ', number_found)
+print('number of branches is: ', branches)
+end_time = time()
+print('in: ', end_time - start_time, 'seconds.')
+
