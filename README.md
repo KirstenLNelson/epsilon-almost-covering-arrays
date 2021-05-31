@@ -1,5 +1,6 @@
 # epsilon-almost-covering-arrays
 Code for generating epilon-almost-covering-arrays and related discrete objects.
 
-Program gencoverarrays creates covering arrays with parameter set CAN(2, k, 2).
-To use:  1)  change the "3" to be your desired number of factors (normally parameter "k")  2)  change the "[0, 0, 1, 1]" to be a balanced vector of zeroes and ones of your desired number of rows (normally parameter "N")
+Program gencoverarrays creates covering arrays with parameter set CA(N; 2, k, 2).  To use, set the value of k to be your desired number of factors.   Set up a base row, which will normally be a near-balanced array of zeroes and ones; if the length is odd, add an extra zero.  The length of this base row controls N, the number of rows in your covering array.
+
+The current version can find all covering arrays (some are isomorphic to others) up to k=6, N=6 in a few minutes.
