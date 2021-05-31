@@ -16,6 +16,8 @@ def is_CA(array):
     '''
     >>> is_CA([[0,0,1,1],[0,1,0,1]])
     True
+    >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]])
+    False
     '''    
     k = len(array)
     for t_set in itertools.combinations(range(k), 2):
@@ -26,6 +28,13 @@ def is_CA(array):
 # ------------------------------------------------------    
 def is_t_set_covered(array, t_set):
 # ------------------------------------------------------
+    ''' 
+    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (1,2))
+    False
+    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1))   
+    True
+    ''' 
+
     row_set = set()
     for j in range(0, 3):
         row_set.add((array[t_set[0]][j], array[t_set[1]][j]))
