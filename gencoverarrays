@@ -18,12 +18,16 @@ def is_CA(array):
     True
     >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]])
     False
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]])
+    True
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1]])
+    False
     '''
 # The array may not be full size yet    
     len_array = len(array)
-# We will cycle through every possible pair of columns to test coverage
-    for t_set in itertools.combinations(range(len_array), 2):
-        if not is_t_set_covered(array, t_set):
+# We need to compare the new column to each one already in the array
+    for existing_row in range(0, len_array-1):
+        if not is_t_set_covered(array, [existing_row, len_array-1]):
             return False
     return True
 
@@ -35,6 +39,9 @@ def is_t_set_covered(array, t_set):
     False
     >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1))
     True
+    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], (0,3))
+    True
+    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,1,0,1,0],[0,0,1,0,1]], (2,3))
     '''
     row_set = set()
 # Cycle through the k column-rows of the array    
@@ -52,6 +59,9 @@ def search_CA(temp_array, i):
 # ------------------------------------------------------
     global number_found
     global branches
+    N_odd = False
+    if len(base_row) % 2 == 1:
+        N_odd = True
     if i == k and is_CA(temp_array):
 # We want our rows to be in increasing order
         if temp_array[1] < temp_array[2]:
@@ -63,20 +73,22 @@ def search_CA(temp_array, i):
 # This is a terrible solution for the fact that we are getting each possible
 # row four times more often than we need it.
         for column in list(set(itertools.permutations(base_row))):
-            new_array = temp_array[:]
-            new_array.append(column)
-            if is_CA(new_array):
-                search_CA(new_array, i+1)
+# If N is even, we can always re-label a column to have a 0 in the first entry
+            if (N_odd) or (not N_odd and column[0] == 0):
+                new_array = temp_array[:]
+                new_array.append(column)
+                if is_CA(new_array):
+                    search_CA(new_array, i+1)
 
 doctest.testmod()
 start_time = time()
 number_found = 0
 branches = 0
 # Set this to your desired parameter k, the number of factors
-k = 3
+k = 10
 # Set this to your desired first column; normally a balance of zeroes and ones,
 # and if your length is odd, have one extra zero.
-base_row = (0,0,1,1)
+base_row = (0,0,0,1,1,1)
 # Fix the first row as what we want it to be for canonical generation.
 search_CA([base_row], 1)
 print('number_found is: ', number_found)
