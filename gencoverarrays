@@ -10,6 +10,8 @@ CA(N;t,k,v) where t=2, v=2, and you set your desired k and N.
 from time import time
 import itertools
 
+# is_CA: Matrix -> Boolean
+# Purpose: check if a matrix is a covering array
 # ------------------------------------------------------
 def is_CA(array):
 # ------------------------------------------------------
@@ -31,6 +33,8 @@ def is_CA(array):
             return False
     return True
 
+# is_t_set_covered: matrix, list -> Boolean
+# Purpose: given a matrix and a set of columns, check if they are covered
 # ------------------------------------------------------    
 def is_t_set_covered(array, t_set):
 # ------------------------------------------------------
@@ -54,6 +58,8 @@ def is_t_set_covered(array, t_set):
     else:
         return False
 
+# search_CA: matrix, integer -> recursive call
+# Purpose: a recursive search for covering arrays        
 # ------------------------------------------------------
 def search_CA(temp_array, i):
 # ------------------------------------------------------
@@ -80,19 +86,27 @@ def search_CA(temp_array, i):
                 if is_CA(new_array):
                     search_CA(new_array, i+1)
 
+# ------------------------------------------------------
+# Main program begins here
+# ------------------------------------------------------
+# Run unit tests
 doctest.testmod()
+# ------------------------------------------------------
+# Set your parameters here
+# ------------------------------------------------------
+# Set this to your desired parameter k, the number of factors
+k = 4
+# Set this to your desired first column; normally a balance of zeroes and ones,
+# and if your length is odd, have one extra zero.
+base_row = (0,0,0,1,1)
+# ------------------------------------------------------
+# Here we go!
+# ------------------------------------------------------
 start_time = time()
 number_found = 0
 branches = 0
-# Set this to your desired parameter k, the number of factors
-k = 10
-# Set this to your desired first column; normally a balance of zeroes and ones,
-# and if your length is odd, have one extra zero.
-base_row = (0,0,0,1,1,1)
-# Fix the first row as what we want it to be for canonical generation.
 search_CA([base_row], 1)
 print('number_found is: ', number_found)
 print('number of branches is: ', branches)
 end_time = time()
 print('in: ', end_time - start_time, 'seconds.')
-
