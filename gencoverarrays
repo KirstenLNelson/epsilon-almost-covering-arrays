@@ -69,10 +69,8 @@ def search_CA(temp_array, i):
     if len(base_row) % 2 == 1:
         N_odd = True
     if i == k and is_CA(temp_array):
-# We want our rows to be in increasing order
-        if temp_array[1] < temp_array[2]:
-            number_found = number_found + 1
-            print('I found you this array: ', temp_array)
+        number_found = number_found + 1
+        print('I found you this array: ', temp_array)
         branches = branches + 1
     else:
         branches = branches + 1
@@ -82,9 +80,11 @@ def search_CA(temp_array, i):
 # If N is even, we can always re-label a column to have a 0 in the first entry
             if (N_odd) or (not N_odd and column[0] == 0):
                 new_array = temp_array[:]
-                new_array.append(column)
-                if is_CA(new_array):
-                    search_CA(new_array, i+1)
+# We want our rows to be in increasing order
+                if column > new_array[-1]:
+                    new_array.append(column)
+                    if is_CA(new_array):
+                        search_CA(new_array, i+1)
 
 # ------------------------------------------------------
 # Main program begins here
