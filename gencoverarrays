@@ -4,32 +4,40 @@ Created on Sat May  29 12:16:00 2021
 @author: KirstenLNelson
 
 A very naive Python program to generate all covering arrays with parameters 
-CA(N;t,k,v) where t=2, v=2, and you set your desired k and N.
+CA(N;t,k,v) where v=2, and you set your desired t, k and N.
 """
 
 from time import time
 import itertools
 
-# is_CA: Matrix -> Boolean
-# Purpose: check if a matrix is a covering array
+# is_CA: Matrix Integer -> Boolean
+# Purpose: check if a matrix is a covering array for a given strength
 # ------------------------------------------------------
-def is_CA(array):
+def is_CA(array, t):
 # ------------------------------------------------------
     '''
-    >>> is_CA([[0,0,1,1],[0,1,0,1]])
+    >>> is_CA([[0,0,1,1],[0,1,0,1]], 2)
     True
-    >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]])
+    >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]], 2)
     False
-    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]])
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], 2)
     True
-    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1]])
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1]], 2)
+    False
+    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], 3)
+    True
+    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], 3)
     False
     '''
 # The array may not be full size yet    
     len_array = len(array)
+# We can only test the coverage if the number of columns is as big as the 
+# strength, so just let it pass the test until then
+    if len_array < t:
+        return True
 # We need to compare the new column to each one already in the array
-    for existing_row in range(0, len_array-1):
-        if not is_t_set_covered(array, [existing_row, len_array-1]):
+    for t_set in itertools.combinations(range(len_array), t):
+        if not is_t_set_covered(array, t_set):
             return False
     return True
 
@@ -38,6 +46,7 @@ def is_CA(array):
 # ------------------------------------------------------    
 def is_t_set_covered(array, t_set):
 # ------------------------------------------------------
+# Examples:
     '''
     >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (1,2))
     False
@@ -46,18 +55,30 @@ def is_t_set_covered(array, t_set):
     >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], (0,3))
     True
     >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,1,0,1,0],[0,0,1,0,1]], (2,3))
+    False
+    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], (0,1,2))
+    True
+    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], (1,2,3))
+    False
     '''
-    row_set = set()
+    t = len(t_set)
+    row_set = []
 # Cycle through the k column-rows of the array    
     for j in range(0, len(array[0])):
-# Pull out the 2-tuple and put it in the set  
-        row_set.add((array[t_set[0]][j], array[t_set[1]][j]))
-# We need the number of unique tuples to be 4; each of 00, 01, 10, 11
-    if len(row_set) == 4:
+# Pull out the t-tuple and put it in the set  
+        curr_tuple = []
+        for m in range(0, len(t_set)):
+            curr_tuple.append(array[t_set[m]][j])
+        row_set.append([curr_tuple])
+    row_set.sort()
+# Eliminate the duplicates
+    row_set = [i for n, i in enumerate(row_set) if i not in row_set[:n]]
+# We need the number of unique tuples to be equal to v^t
+    if len(row_set) == 2**t:
         return True
     else:
         return False
-
+        
 # search_CA: matrix, integer -> recursive call
 # Purpose: a recursive search for covering arrays        
 # ------------------------------------------------------
@@ -68,7 +89,7 @@ def search_CA(temp_array, i):
     N_odd = False
     if len(base_row) % 2 == 1:
         N_odd = True
-    if i == k and is_CA(temp_array):
+    if i == k and is_CA(temp_array, t):
         number_found = number_found + 1
         print('I found you this array: ', temp_array)
         branches = branches + 1
@@ -83,7 +104,7 @@ def search_CA(temp_array, i):
 # We want our rows to be in increasing order
                 if column > new_array[-1]:
                     new_array.append(column)
-                    if is_CA(new_array):
+                    if is_CA(new_array, t):
                         search_CA(new_array, i+1)
 
 # ------------------------------------------------------
@@ -95,10 +116,12 @@ doctest.testmod()
 # Set your parameters here
 # ------------------------------------------------------
 # Set this to your desired parameter k, the number of factors
-k = 4
+k = 6
+# Set this to your desired parameter t, the strength of the array
+t = 3
 # Set this to your desired first column; normally a balance of zeroes and ones,
 # and if your length is odd, have one extra zero.
-base_row = (0,0,0,1,1)
+base_row = (0,0,0,0,1,1,1,1)
 # ------------------------------------------------------
 # Here we go!
 # ------------------------------------------------------
