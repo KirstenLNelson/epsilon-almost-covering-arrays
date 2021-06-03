@@ -4,31 +4,35 @@ Created on Sat May  29 12:16:00 2021
 @author: KirstenLNelson
 
 A very naive Python program to generate all covering arrays with parameters 
-CA(N;t,k,v) where v=2, and you set your desired t, k and N.
+CA(N;t,k,v) where you input your desired t, k, v, and N.
 """
 
 from time import time
 import itertools
 
-# is_CA: Matrix Integer -> Boolean
+# is_CA: matrix integer integer -> Boolean
 # Purpose: check if a matrix is a covering array for a given strength
 # ------------------------------------------------------
-def is_CA(array, t):
+def is_CA(array, t, v):
 # ------------------------------------------------------
     '''
-    >>> is_CA([[0,0,1,1],[0,1,0,1]], 2)
+    >>> is_CA([[0,0,1,1],[0,1,0,1]], 2, 2)
     True
-    >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]], 2)
+    >>> is_CA([[0,0,1,1],[0,1,0,1],[1,0,1,0]], 2, 2)
     False
-    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], 2)
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], 2, 2)
     True
-    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1]], 2)
+    >>> is_CA([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1],[0,1,0,0,1]], 2, 2)
     False
-    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], 3)
+    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], 3, 2)
     True
-    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], 3)
+    >>> is_CA([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], 3, 2)
     False
-    >>> is_CA([[(0,0,0,0,0,1,1,1,1,1),(0,0,0,1,1,1,1,1,0,0),(0,1,0,1,0,1,1,0,0,1),(0,1,1,0,1,1,0,0,1,0)]])
+    >>> is_CA([[0,0,0,0,0,1,1,1,1,1],[0,0,0,1,1,1,1,1,0,0],[0,1,0,1,0,1,1,0,0,1],[0,1,1,0,1,1,0,0,1,0]],3,2)
+    True
+    >>> is_CA([[0,0,0,0,0,1,1,1,1,1],[0,0,0,1,1,1,1,1,0,0],[1,0,0,1,0,1,1,0,0,1],[0,1,1,0,1,1,0,0,1,0]],3,2)
+    False
+    >>> is_CA([[0,0,0,0,1,1,1,1,2,2,2],[0,2,1,0,1,0,2,1,0,2,1],[1,0,0,2,2,1,1,0,0,2,1],[1,1,2,0,1,2,0,0,0,2,1],[2,0,1,1,0,0,1,2,0,2,1]],2,3)
     True
     '''
 # The array may not be full size yet    
@@ -39,28 +43,28 @@ def is_CA(array, t):
         return True
 # We need to compare the new column to each one already in the array
     for t_set in itertools.combinations(range(len_array), t):
-        if not is_t_set_covered(array, t_set):
+        if not is_t_set_covered(array, t_set, v):
             return False
     return True
 
-# is_t_set_covered: matrix, list -> Boolean
+# is_t_set_covered: matrix, list, integer -> Boolean
 # Purpose: given a matrix and a set of columns, check if they are covered
 # ------------------------------------------------------    
-def is_t_set_covered(array, t_set):
+def is_t_set_covered(array, t_set, v):
 # ------------------------------------------------------
 # Examples:
     '''
-    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (1,2))
+    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (1,2), 2)
     False
-    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1))
+    >>> is_t_set_covered([[0,0,1,1],[0,1,0,1],[1,0,1,0]], (0,1), 2)
     True
-    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], (0,3))
+    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,1],[0,0,1,0,1]], (0,3), 2)
     True
-    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,1,0,1,0],[0,0,1,0,1]], (2,3))
+    >>> is_t_set_covered([[0,0,0,1,1],[0,1,0,0,1],[1,1,0,1,0],[0,0,1,0,1]], (2,3), 2)
     False
-    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], (0,1,2))
+    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1]], (0,1,2), 2)
     True
-    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], (1,2,3))
+    >>> is_t_set_covered([[0,0,0,0,1,1,1,1],[0,0,1,1,0,0,1,1],[0,1,0,1,0,1,0,1],[0,1,0,1,0,1,0,1]], (1,2,3), 2)
     False
     '''
     t = len(t_set)
@@ -84,14 +88,14 @@ def is_t_set_covered(array, t_set):
 # search_CA: matrix, integer -> recursive call
 # Purpose: a recursive search for covering arrays        
 # ------------------------------------------------------
-def search_CA(temp_array, i):
+def search_CA(temp_array, i, t, k, v):
 # ------------------------------------------------------
     global number_found
     global branches
     v_div_N = False
     if len(base_row) % v == 0:
         v_div_N = True
-    if i == k and is_CA(temp_array, t):
+    if i == k and is_CA(temp_array, t, v):
         number_found = number_found + 1
         if number_found == 1:
             print('I found you this array: ', temp_array)
@@ -107,35 +111,34 @@ def search_CA(temp_array, i):
 # We want our rows to be in increasing order
                 if column > new_array[-1]:
                     new_array.append(column)
-                    if is_CA(new_array, t):
-                        search_CA(new_array, i+1)
+                    if is_CA(new_array, t, v):
+                        search_CA(new_array, i+1, t, k, v)
 
 # ------------------------------------------------------
 # Main program begins here
 # ------------------------------------------------------
 # Run unit tests
-#doctest.testmod()
+doctest.testmod()
 # ------------------------------------------------------
 # Set your parameters here
 # ------------------------------------------------------
 # Set this to your desired parameter k, the number of factors
 k = 5
 # Set this to your desired parameter t, the strength of the array
-t = 2
+t = 4
 # Set this to the size of your alphabet, v
-v = 3
+v = 2
 # Set this to your desired first column; normally a balance of alphabet 
 # characters. If N is not divisible by v, put extra characters near the front.
-base_row = (0,0,0,0,1,1,1,1,2,2,2)
+base_row = (0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1)
 # ------------------------------------------------------
 # Here we go!
 # ------------------------------------------------------
 start_time = time()
 number_found = 0
 branches = 0
-search_CA([base_row], 1)
+search_CA([base_row], 1, t, k, v)
 print('number_found is: ', number_found)
 print('number of branches is: ', branches)
 end_time = time()
 print('in: ', end_time - start_time, 'seconds.')
-
