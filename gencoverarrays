@@ -9,6 +9,7 @@ CA(N;t,k,v) where you input your desired t, k, v, and N.
 
 from time import time
 import itertools
+import doctest
 
 # is_CA: matrix integer integer -> Boolean
 # Purpose: check if a matrix is a covering array for a given strength
