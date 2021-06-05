@@ -10,6 +10,7 @@ CA(N;t,k,v) where you input your desired t, k, v, and N.
 from time import time
 import itertools
 import doctest
+import math
 
 # is_CA: matrix integer integer -> Boolean
 # Purpose: check if a matrix is a covering array for a given strength
@@ -86,6 +87,35 @@ def is_t_set_covered(array, t_set, v):
     else:
         return False
         
+# create_base_row: integer integer -> list 
+# Purpose: Given the number of rows and symbols, return the first row        
+# ------------------------------------------------------
+def create_base_row(N, v):
+# ------------------------------------------------------
+# Examples:
+    '''
+    >>> create_base_row(10,3)
+    [0, 0, 0, 0, 1, 1, 1, 2, 2, 2]
+    >>> create_base_row(8,2)
+    [0, 0, 0, 0, 1, 1, 1, 1]
+    '''
+# Initialize the list we'll be returning    
+    base_row = []
+# We'll be adding at least this many of each symbol; e.g. floor(10/3)=3, floor(8/2)=4.    
+    base_num = math.floor(N/v)
+# We'll be adding one extra of some symbols, starting with the smallest one, to make up the difference; 
+# e.g. 10 % 3 = 1 so we'll add an extra 0, 8 % 2 = 0 so we don't need any extras.
+    extra_num = N % v
+# Loop over all the symbols we're adding    
+    for k in range(0, v):
+# For each symbol, add at least the base number        
+        for l in range(0, base_num):
+            base_row.append(k)
+# If we're in the smaller numbers, add the extra symbol; e.g. for 10/3 we add an extra 0.
+        if k < extra_num:
+            base_row.append(k)
+    return base_row
+        
 # search_CA: matrix, integer -> recursive call
 # Purpose: a recursive search for covering arrays        
 # ------------------------------------------------------
@@ -109,6 +139,7 @@ def search_CA(temp_array, i, t, k, v):
 # If v divides N, we can re-label a column to have a 0 in the first entry
             if (not v_div_N) or (v_div_N and column[0] == 0):
                 new_array = temp_array[:]
+                column = list(column)
 # We want our rows to be in increasing order
                 if column > new_array[-1]:
                     new_array.append(column)
@@ -123,21 +154,18 @@ doctest.testmod()
 # ------------------------------------------------------
 # Set your parameters here
 # ------------------------------------------------------
-# Set this to your desired parameter k, the number of factors
+# Set your parameters for a CA(N;t,k,v)
+N = 11
+t = 2
 k = 5
-# Set this to your desired parameter t, the strength of the array
-t = 4
-# Set this to the size of your alphabet, v
-v = 2
-# Set this to your desired first column; normally a balance of alphabet 
-# characters. If N is not divisible by v, put extra characters near the front.
-base_row = (0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1)
+v = 3
 # ------------------------------------------------------
 # Here we go!
 # ------------------------------------------------------
 start_time = time()
 number_found = 0
 branches = 0
+base_row = create_base_row(N, v)
 search_CA([base_row], 1, t, k, v)
 print('number_found is: ', number_found)
 print('number of branches is: ', branches)
