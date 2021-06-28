@@ -116,6 +116,35 @@ def create_base_row(N, v):
             base_row.append(k)
     return base_row
         
+# create_second_row: list integer -> list 
+# Purpose: Given a base row and the alphabet, return the second row        
+# ------------------------------------------------------
+def create_second_row(base_row, v):
+# ------------------------------------------------------
+# Examples:
+    '''
+    >>> create_second_row([0,0,0,0,1,1,1,2,2,2],3)
+    [0, 0, 1, 2, 0, 1, 2, 0, 1, 2]
+    >>> create_second_row([0,0,0,0,1,1,1,1],2)
+    [0, 0, 1, 1, 0, 0, 1, 1]
+    >>> create_second_row([0,0,0,1,1],2)
+    [0, 0, 1, 0, 1]
+    >>> create_second_row([0,0,0,0,0,1,1,1,1,1],2)
+    [0, 0, 0, 1, 1, 0, 0, 1, 1, 1]
+    '''
+# Initialize the list we'll be returning  
+    row_buckets = []
+    for k in range(0, v):
+        row_buckets.append([])  
+# Keep track of which bucket is next to dump an element in    
+    bucket_num = 0
+    for k in range(0, len(base_row)):
+        row_buckets[bucket_num].append(base_row[k])
+        bucket_num = (bucket_num + 1) % v
+# Flatten the list of lists into a single list to return        
+    second_row = [item for sublist in row_buckets for item in sublist]    
+    return second_row
+
 # search_CA: matrix, integer -> recursive call
 # Purpose: a recursive search for covering arrays        
 # ------------------------------------------------------
@@ -129,7 +158,8 @@ def search_CA(temp_array, i, t, k, v):
     if i == k and is_CA(temp_array, t, v):
         number_found = number_found + 1
         if number_found == 1:
-            print('I found you this array: ', temp_array)
+            print(temp_array)
+            print('in this many seconds: ', start_time - time())
         branches = branches + 1
     else:
         branches = branches + 1
@@ -155,10 +185,10 @@ doctest.testmod()
 # Set your parameters here
 # ------------------------------------------------------
 # Set your parameters for a CA(N;t,k,v)
-N = 11
+N = 16
 t = 2
-k = 5
-v = 3
+k = 4
+v = 5
 # ------------------------------------------------------
 # Here we go!
 # ------------------------------------------------------
@@ -166,7 +196,8 @@ start_time = time()
 number_found = 0
 branches = 0
 base_row = create_base_row(N, v)
-search_CA([base_row], 1, t, k, v)
+row_two = create_second_row(base_row, v)
+search_CA([base_row,row_two], 2, t, k, v)
 print('number_found is: ', number_found)
 print('number of branches is: ', branches)
 end_time = time()
