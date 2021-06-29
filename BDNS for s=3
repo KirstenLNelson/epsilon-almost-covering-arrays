@@ -1,0 +1,12 @@
+This are useful for the m-sequence (0, 1, 1...).  Here are shifts from T=5 to T=21, except for T=10 which does not exist.  If you need T > 21, I recommend you move up to a longer base sequence: see the file for s=7.
+[-1, 0, 0, 2, 0]
+[-1, 0, 0, 0, 2, 0]
+[-1, 0, 0, 0, 1, 0, 2]
+[-1, 0, 0, 2, 2, 0, 2, 0]
+[-1, -1, 0, 0, 1, 1, 0, 1, 0]
+(NO shift exists for T=10)
+[-1, -1, 0, 0, 0, 0, 2, 1, 0, 1, 2]
+[-1, 0, 0, -1, 0, 0, 2, 1, 2, 0, 0, 1]
+[-1, -1, -1, 0, 0, 0, 0, 1, 2, 0, 2, 1, 0]
+(NO shift exists for T=14, T=15)
+[-1, -1, 0, 0, -1, 0, 1, 0, 1, 2, 2, 1, 1, 2, 1, 0]
