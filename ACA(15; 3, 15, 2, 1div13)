@@ -1,0 +1,19 @@
+An ACA(15; 3, 15, 2, 1/13).  The number of rows and columns is both 15.  The alphabet has 2 characters.
+This array was generated from base sequence (0,1,1) and shift sequence [-1, 0, 0, 2, 0].
+According to the covering array tables for these parameters (https://www.public.asu.edu/~ccolbou/src/tabby/3-2-ca.html), the full array has 17 rows, so this saves 2 rows.
+Test run savings:  11.8%    Tests missing:  7.9%
+[[0 0 0 1 0 0 1 1 0 1 0 1 1 1 1]
+ [0 0 1 0 0 1 1 0 1 0 1 1 1 1 0]
+ [0 1 0 0 1 1 0 1 0 1 1 1 1 0 0]
+ [1 0 0 1 1 0 1 0 1 1 1 1 0 0 0]
+ [0 0 1 1 0 1 0 1 1 1 1 0 0 0 1]
+ [0 1 1 0 1 0 1 1 1 1 0 0 0 1 0]
+ [1 1 0 1 0 1 1 1 1 0 0 0 1 0 0]
+ [1 0 1 0 1 1 1 1 0 0 0 1 0 0 1]
+ [0 1 0 1 1 1 1 0 0 0 1 0 0 1 1]
+ [1 0 1 1 1 1 0 0 0 1 0 0 1 1 0]
+ [0 1 1 1 1 0 0 0 1 0 0 1 1 0 1]
+ [1 1 1 1 0 0 0 1 0 0 1 1 0 1 0]
+ [1 1 1 0 0 0 1 0 0 1 1 0 1 0 1]
+ [1 1 0 0 0 1 0 0 1 1 0 1 0 1 1]
+ [1 0 0 0 1 0 0 1 1 0 1 0 1 1 1]]
