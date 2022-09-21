@@ -272,6 +272,7 @@ doctest.testmod()
 # Set your parameters
 T = 10  # Desired length of vector
 s = 6   # Length of base sequence
+gen_all = False # Set this to False to find only one; i.e., prove existence
 # If you want to change the file name they are printed to, here you can
 output_file_name = 'BDNS_T'+str(T)+'_s'+str(s)+'.txt'
 # ------------------------------------------------------
@@ -282,8 +283,13 @@ number_found = 0
 branches = 0
 num_inf = int((T-1)/(s+1))
 output_file = open(output_file_name, 'w')
+keep_running = True
+# Create a generator object for the shifts we can call repeatedly
+shift_gen = create_shifts(s, T, num_inf)
+#
+while keep_running:
 # We're going to naively generate all possible shifts
-for shift in create_shifts(s, T, num_inf):
+    shift = next(shift_gen)
 # Only continue if the number of infinities is correct
     if shift.count(-1) == num_inf:
 # We need to have two periods of the shift to calculate the gaps        
@@ -296,6 +302,8 @@ for shift in create_shifts(s, T, num_inf):
                 if number_found == 0:
                     print('I found you this BDNS: ', shift)
                     print('And it took this long: ', time() - start_time)
+                    if gen_all == False:
+                        keep_running = False
                 number_found = number_found + 1
 print('number_found is: ', number_found)
 print('number of branches is: ', branches)
