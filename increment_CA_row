@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 23 16:37:46 2023
+
+@author: kirst
+"""
+
+# increment_row: list -> list 
+# Purpose: Given a list, return the next permutation of the list
+# ------------------------------------------------------
+def increment_row(curr_row):
+# ------------------------------------------------------
+# Examples:
+    '''
+    >>> increment_row([0,0,1,1,2,2])
+    (True, [0, 0, 1, 2, 1, 2])
+    >>> increment_row([0,0,1,2,1,2])
+    (True, [0, 0, 1, 2, 2, 1])
+    '''
+    found_position = False
+    next_row = []
+# Start at the end of the sequence
+    position = len(curr_row)-1
+    while not found_position:
+# We have a smaller value in position-1 and a larger value after it in
+# position, so this is where we make the switch    
+# e.g. if our list is [0,0,2,2,1,1], position will be 2    
+        if curr_row[position] > curr_row[position-1]:
+# If we get to the start of the string, then there is no next permutation            
+            if position == 0: 
+                return (False, [0])
+            else:
+# Start building the new row with everything up to position-1; e.g. [0]                
+                next_row.extend(curr_row[:position-1])
+# We need to find the smallest element in the rest of the string that is greater than the one in
+# position-1. E.g. in our string [0,0,2,2,1,1], we need to carry up a 1 
+                min_element = curr_row[position]
+                for i in range(position, len(curr_row)):
+                    if curr_row[i] > curr_row[position-1] and curr_row[i] < min_element:
+                        min_element = curr_row[i]
+# Append that next element; e.g. list is now [0,1]        
+                next_row.append(min_element)
+# Grab the rest of the row and sort it
+                rest_of_row = sorted(curr_row[position:]) 
+# Replace the first occurrence of min_element with the old value from position-1                
+                rest_of_row[rest_of_row.index(min_element)] = curr_row[position-1]
+                next_row.extend(rest_of_row)
+                return (True, next_row)
+        else:
+            position=position-1   
+      
